@@ -1,4 +1,4 @@
-pragma solidity 0.6.12;
+pragma solidity >=0.6.12;
 
 contract farm2fork{
     
@@ -34,7 +34,6 @@ contract farm2fork{
         string accpetedLocation;
         string deliveredLocation;
     }
-    
     mapping(address=>shipping) shippingDataMapping; 
     
     struct retail{
@@ -46,7 +45,7 @@ contract farm2fork{
     mapping(address=>retail) retailDataMapping;
     
     struct customer{
-        address customer;
+        address customerID;
         uint256 purchasedDate;
     }
     
@@ -123,33 +122,33 @@ contract farm2fork{
     }
     //*********************Register required users**************************************************************
     
-    function registerProducer(string memory name, string memory BID)public{
+    function registerProducer(string memory name, string memory BID)public onlyProducer{
         user memory p = user(role.producer, name, BID, 0, 0);
         userMapping[msg.sender] = p;
         emit producerRegistered(msg.sender, name, BID);
     }
     
     
-    function registerPacker(string memory name, string memory BID)public{
-        user memory pa = user(role.producer, name, BID, 0, 0);
+    function registerPacker(string memory name, string memory BID)public onlyPacker{
+        user memory pa = user(role.packer, name, BID, 0, 0);
         userMapping[msg.sender] = pa;
         emit packerRegistered(msg.sender, name, BID);
     }
     
-    function registerDistributer(string memory name, string memory BID)public{
-        user memory d = user(role.producer, name, BID, 0, 0);
+    function registerDistributer(string memory name, string memory BID)public onlyDistributer{
+        user memory d = user(role.distributer, name, BID, 0, 0);
         userMapping[msg.sender] = d;
         emit distributerRegistered(msg.sender, name, BID);
     }
     
-    function registerRetailer(string memory name, string memory BID)public{
-        user memory r = user(role.producer, name, BID, 0, 0);
+    function registerRetailer(string memory name, string memory BID)public onlyRetailer{
+        user memory r = user(role.retailer, name, BID, 0, 0);
         userMapping[msg.sender] = r;
         emit retailerRegistered(msg.sender, name, BID);
     }
     
-    function registerCustomer(string memory name, string memory BID)public{
-        user memory c = user(role.producer, name, BID, 0, 0);
+    function registerCustomer(string memory name, string memory BID)public onlyCustomer{
+        user memory c = user(role.customer, name, BID, 0, 0);
         userMapping[msg.sender] = c;
         emit customerRegistered(msg.sender, name, BID);
     }
@@ -218,8 +217,7 @@ contract farm2fork{
 }
 
 
-
-pragma solidity 0.6.12;
+pragma solidity >=0.6.12;
 
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol";
 
@@ -240,7 +238,7 @@ contract Token is ERC20 {
 
 
 
-pragma solidity 0.6.12;
+pragma solidity >=0.6.12;
 
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/IERC20.sol";
 
